@@ -1,12 +1,25 @@
 "use client";
 
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/store/use-editor-store";
-import { LucideIcon, Undo2Icon } from "lucide-react";
+import {
+  BoldIcon,
+  ItalicIcon,
+  ListTodoIcon,
+  LucideIcon,
+  MessageSquarePlusIcon,
+  PrinterIcon,
+  Redo2Icon,
+  RemoveFormattingIcon,
+  SpellCheckIcon,
+  UnderlineIcon,
+  Undo2Icon,
+} from "lucide-react";
 
 interface ToolbarButtonProps {
   onClick?: () => void;
-  isActive?: () => void;
+  isActive?: boolean;
   icon: LucideIcon;
 };
 
@@ -29,12 +42,90 @@ export const Toolbar = () => {
         icon: Undo2Icon,
         onClick: () => editor?.chain().focus().undo().run(),
       },
+      {
+        label: 'Rehacer',
+        icon: Redo2Icon,
+        onClick: () => editor?.chain().focus().redo().run(),
+      },
+      {
+        label: 'Imprimir',
+        icon: PrinterIcon,
+        onClick: () => window.print(),
+      },
+      {
+        label: 'Corrector Ortográfico',
+        icon: SpellCheckIcon,
+        onClick: () => {
+          const current = editor?.view.dom.getAttribute("spellcheck");
+          editor?.view.dom.setAttribute("spellcheck", current === "false" ? "true" : "false");
+        },
+      },
+    ],
+    [
+      {
+        label: "Negrita",
+        icon: BoldIcon,
+        isActive: editor?.isActive("bold"),
+        onClick: () => editor?.chain().focus().toggleBold().run(),
+      },
+      {
+        label: "Cursiva",
+        icon: ItalicIcon,
+        isActive: editor?.isActive("italic"),
+        onClick: () => editor?.chain().focus().toggleItalic().run(),
+      },
+      {
+        label: "Subrayado",
+        icon: UnderlineIcon,
+        isActive: editor?.isActive("underline"),
+        onClick: () => editor?.chain().focus().toggleUnderline().run(),
+      },
+    ],
+    [
+      {
+        label: "Comentar",
+        icon: MessageSquarePlusIcon,
+        isActive: false, // TODO: Activar esta función
+        onClick: () => console.log('TODO: Comentar'),
+      },
+      {
+        label: "Lista de Tareas Pendientes",
+        icon: ListTodoIcon,
+        isActive: editor?.isActive("taskList"),
+        onClick: () => editor?.chain().focus().toggleTaskList().run(),
+      },
+      {
+        label: "Eliminar Formato",
+        icon: RemoveFormattingIcon,
+        onClick: () => editor?.chain().focus().unsetAllMarks().run(),
+      },
     ],
   ];
 
   return (
     <div className="bg-[#F1F4F9] px-2.5 py-0.5 rounded-[24px] min-h-[40px] flex items-center gap-x-0.5 overflow-x-auto">
       {sections[0].map((item) => (
+        <ToolbarButton key={item.label} {...item} />
+      ))}
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      {/* TODO: FF */}
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      {/* TODO: Heading */}
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      {/* TODO: FS */}
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      {sections[1].map((item) => (
+        <ToolbarButton key={item.label} {...item} />
+      ))}
+      {/* TODO: Color del texto */}
+      {/* TODO: Color del destacado */}
+      <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      {/* TODO: Link */}
+      {/* TODO: Imagen */}
+      {/* TODO: Alinear */}
+      {/* TODO: Altura de linea */}
+      {/* TODO: Lista */}
+      {sections[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}
     </div>
